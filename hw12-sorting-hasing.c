@@ -194,87 +194,87 @@ int selectionSort(int *a)
 
 int insertionSort(int *a)
 {
-	int i, j, t;
+	int i, j, t; // 반복문 변수, 원소값담을 변수 
 
 	printf("Insertion Sort: \n");
 	printf("----------------------------------------------------------------\n");
 
-	printArray(a);
+	printArray(a); //정렬하기 전 배열 정보 출력 
 
-	for(i = 1; i < MAX_ARRAY_SIZE; i++)
+	for(i = 1; i < MAX_ARRAY_SIZE; i++) // 최종 인덱스 까지 접근 
 	{
-		t = a[i];
-		j = i;
-		while (a[j-1] > t && j > 0)
-		{
-			a[j] = a[j-1];
+		t = a[i]; //인덱스 i번째의 원소 값을 t에 저장 
+		j = i;// j에 i번째 인덱스를 저장 
+		while (a[j-1] > t && j > 0) //이전 인덱스의 값이 더큰 경우 
+		{  // swap 
+			a[j] = a[j-1]; 
 			j--;
 		}
-		a[j] = t;
+		a[j] = t; //a[j] 에 t삽입 
 	}
 
 	printf("----------------------------------------------------------------\n");
-	printArray(a);
+	printArray(a); //정렬이후 배열 정보 출력 
 
 	return 0;
 }
 
 int bubbleSort(int *a)
 {
-	int i, j, t;
+	int i, j, t; // 위함수와 동일  
 
 	printf("Bubble Sort: \n");
 	printf("----------------------------------------------------------------\n");
 
-	printArray(a);
+	printArray(a); //정렬되기 이전의 배열 정보 출력 
 
-	for(i = 0; i < MAX_ARRAY_SIZE; i++)
+	for(i = 0; i < MAX_ARRAY_SIZE; i++) // 0~12 인덱스 반복문 돌기 
 	{
-		for (j = 0; j < MAX_ARRAY_SIZE; j++)
+		for (j = 0; j < MAX_ARRAY_SIZE; j++) // j가 인덱스 1부터 12까지 반복문 돌기 
 		{
-			if (a[j-1] > a[j])
+			if (a[j-1] > a[j]) //j와 직전인덱스를 비교해서 큰값이 나올 경우 
 			{
-				t = a[j-1];
-				a[j-1] = a[j];
+				t = a[j-1]; //a[j-1]와 a[j]를 swap 과정 
+				a[j-1] = a[j]; 
 				a[j] = t;
 			}
 		}
 	}
 
 	printf("----------------------------------------------------------------\n");
-	printArray(a);
+	printArray(a); //정렬이후 배열 출력 
 
 	return 0;
 }
 
 int shellSort(int *a)
 {
-	int i, j, k, h, v;
+	int i, j, k, h, v; 
 
 	printf("Shell Sort: \n");
 	printf("----------------------------------------------------------------\n");
 
-	printArray(a);
+	printArray(a); // 정렬 되기전 정보 출력 
 
-	for (h = MAX_ARRAY_SIZE/2; h > 0; h /= 2)
+	for (h = MAX_ARRAY_SIZE/2; h > 0; h /= 2) // h는 배열 크기 1/2 부터 시작 한단계 수행 될때마다 h값 1/2 감소 시킴 
 	{
-		for (i = 0; i < h; i++)
+		for (i = 0; i < h; i++) // 첫번째 부분집합의 기준을 h로 한다 0부터 h-1까지 반복  
 		{
-			for(j = i + h; j < MAX_ARRAY_SIZE; j += h)
+			for(j = i + h; j < MAX_ARRAY_SIZE; j += h) // i번째에서 h만큼 떨어진 원소들과 비교 
 			{
-				v = a[j];
-				k = j;
+				v = a[j]; //i에서 h만큼 떨어진 j번째 원소의 값을 v에 저장 
+				k = j; //인덱스 j의 값을 k에 저장 
 				while (k > h-1 && a[k-h] > v)
-				{
-					a[k] = a[k-h];
-					k -= h;
+				{ //k의 값이 두번째 부분집합의 첫번째 인덱스와 같거나 크고, i의 원소보다 h 간격만큼 떨어진 j의 원소가 작은 경우 
+					a[k] = a[k-h]; // 둘중에 더큰값을 뒤의 위치 즉, j번째 위치에 j이전의 h만큼 떨어진 원소 저장 
+					k -= h; //k가 i에서 h만큼 한 번 이상 떨어진 곳의 인덱스 이므로 h만큼 빼서 이전의 h만큼 떨어진 인덱스로 이동 
 				}
-				a[k] = v;
+				a[k] = v; // j번째 원소를 while문을 탈출 한 k번째의 저장 
 			}
 		}
 	}
 	printf("----------------------------------------------------------------\n");
-	printArray(a);
+	printArray(a); // 정렬 후의 배열 상태 출력  
 
 	return 0;
 }
@@ -284,28 +284,28 @@ int quickSort(int *a, int n)
 	int v, t;
 	int i, j;
 
-	if (n > 1)
+	if (n > 1) // 서브 리스트의 원소가 2개 이상인경우 (원소가 하나인 경우 정렬이 필요없다) 
 	{
-		v = a[n-1];
-		i = -1;
-		j = n - 1;
+		v = a[n-1]; // 배열의 마지막 원소를 v에 저장한다 
+		i = -1; //배열의 첫번째 원소부터 접근 가능하도록 i의 -1로 설정 
+		j = n - 1; // 배열의 마지막 인덱스 번호를 j에 저장 
 
-		while(1)
+		while(1) // 무한루프가 돈다 
 		{
-			while(a[++i] < v);
-			while(a[--j] > v);
+			while(a[++i] < v); //i번째 원소가 추축보다 커질때까지 i를 증가시킨다 
+			while(a[--j] > v); //i번째 원소가 추축보다 작아질때까지 j를 감소 시킨다 
 
-			if (i >= j) break;
-			t = a[i];
-			a[i] = a[j];
-			a[j] = t;
+			if (i >= j) break; // i번째 원소가 추축보다 크고 j번째 원소가 추축보다 작을때 반복문을 탈출한다 
+			t = a[i]; // t에 임시로 i번째 원소를 저장한다 
+			a[i] = a[j]; // i번째에 j번째 원소를 저장한다 
+			a[j] = t; // j번째에 i번째 원소를 저장한다 
 		}
-		t = a[i];
-		a[i] = a[n-1];
-		a[n-1] = t;
+		t = a[i]; // t에 i번째 원소를 저장 
+		a[i] = a[n-1]; //i 이전에 추축보다 작은 값이 있으므로 i번째 추축을 저장한다 
+		a[n-1] = t; // 추축이있던 배열의 마지막 위치에 t에 임시 저장된 값 저장 
 
-		quickSort(a, i);
-		quickSort(a+i+1, n-i-1);
+		quickSort(a, i); //추축보다 작은값이 모여있는 리스트를 퀵정렬로 정렬 
+		quickSort(a+i+1, n-i-1); //추축보다 큰값이 모여있는 리스트를 퀵정렬로 정렬 
 	}
 
 
