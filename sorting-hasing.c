@@ -147,48 +147,48 @@ int freeArray(int *a)
 
 void printArray(int *a)
 {
-	if (a == NULL) {
-		printf("nothing to print.\n");
+	if (a == NULL) { //배열이 존재하지 않는 경우 
+		printf("nothing to print.\n");  //오류메세지  
 		return;
 	}
-	for(int i = 0; i < MAX_ARRAY_SIZE; i++)
-		printf("a[%02d] ", i);
+	for(int i = 0; i < MAX_ARRAY_SIZE; i++) //배열에 모든 인덱스 접근 
+		printf("a[%02d] ", i); //0~12까지 출력 
 	printf("\n");
 	for(int i = 0; i < MAX_ARRAY_SIZE; i++)
-		printf("%5d ", a[i]);
+		printf("%5d ", a[i]); //배열의 원소값 출력 
 	printf("\n");
 }
 
 
 int selectionSort(int *a)
 {
-	int min;
-	int minindex;
-	int i, j;
+	int min; //최솟값 변수 
+	int minindex; //최소값 담겨있는 인덱스 담는 변수 
+	int i, j; //반복문용 변수 
 
 	printf("Selection Sort: \n");
 	printf("----------------------------------------------------------------\n");
 
-	printArray(a);
+	printArray(a); // 현재 배열 정보 출력 
 
-	for (i = 0; i < MAX_ARRAY_SIZE; i++)
+	for (i = 0; i < MAX_ARRAY_SIZE; i++) //배열의 사이즈 만큼 반복  
 	{
-		minindex = i;
-		min = a[i];
-		for(j = i+1; j < MAX_ARRAY_SIZE; j++)
+		minindex = i; // 최소값이 담겨있는 인덱스를 i로 초기화  
+		min = a[i]; //최소값이 담길 변수에 인덱스 i에 위치한 배열의 원소를 담는다 
+		for(j = i+1; j < MAX_ARRAY_SIZE; j++) // 배열의 최종인덱스까지 탐색 
 		{
-			if (min > a[j])
+			if (min > a[j]) //min에 담겨있는 값이 j번째 인덱스 보다 클경우 
 			{
-				min = a[j];
-				minindex = j;
+				min = a[j]; // 최소값을 j번째 인덱스 값으로 바꿔준다 
+				minindex = j; //최솟값의 인덱스를 j로 바꿔준다 
 			}
 		}
-		a[minindex] = a[i];
-		a[i] = min;
+		a[minindex] = a[i]; // a[i]보다 작은 값을 가지고 있던 인덱스 J에 a[i] 삽입 
+		a[i] = min; //더작은 최솟값을 swap 
 	}
 
 	printf("----------------------------------------------------------------\n");
-	printArray(a);
+	printArray(a); //정렬 이후의 배열 정보 출력 
 	return 0;
 }
 
