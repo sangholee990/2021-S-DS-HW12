@@ -1,41 +1,52 @@
+/*
+ * hw12-sorting-hashing.c
+ *
+ *  Created on: May 22, 2021
+ *
+ *  Homework 12: Sorting & Hashing
+ *  Department of Computer Science at Chungbuk National University
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX_ARRAY_SIZE			13	
+#define MAX_ARRAY_SIZE			13	/* prime number */
 #define MAX_HASH_TABLE_SIZE 	MAX_ARRAY_SIZE
 
+/* 필요에 따라 함수 추가 가능 */
+int initialize(int **a); //배열을 초기화 해주는 함수 
+int freeArray(int *a); // 동적할당 받은 배열 
+void printArray(int *a); // 배열원소를 출력하는 함수 
 
-int initialize(int **a);
-int freeArray(int *a);
-void printArray(int *a);
-
-int selectionSort(int *a);
-int insertionSort(int *a);
-int bubbleSort(int *a);
-int shellSort(int *a);
-int quickSort(int *a, int n);
-
-
-
-int hashCode(int key);
+int selectionSort(int *a); //selectionsort(선택정렬)를 실행하는 함수 
+int insertionSort(int *a); //insertionsort(삽입정렬)을 실행하는 함수 
+int bubbleSort(int *a); // 버블정렬을 실행하는 함수 
+int shellSort(int *a); // 셀 정렬을 실행하는 함수 
+/* recursive function으로 구현 */
+int quickSort(int *a, int n); // 퀵 정렬을 실행하는 함수 
 
 
-int hashing(int *a, int **ht);
+/* hash code generator, key % MAX_HASH_TABLE_SIZE */
+int hashCode(int key); //키값을 hashcode로 바꿔준다 
 
+/* array a에대한 hash table을 만든다. */
+int hashing(int *a, int **ht); //해쉬 테이블을 만들어준다 (배열 활용) 
 
-int search(int *ht, int key);
+/* hash table에서 key를 찾아 hash table의 index return */
+int search(int *ht, int key); // 해쉬 테이블에서 사용자가 입력한 키를 찾아 리턴해주는 함수 
 
 
 int main()
 {
-	char command;
-	int *array = NULL;
-	int *hashtable = NULL;
-	int key = -1;
-	int index = -1;
+	char command; //사용자로 부터 커맨드를 입력받는 변수 
+	int *array = NULL; // 배열 포인터 초기화 
+	int *hashtable = NULL; // 해쉬테이블 포인터 초기화 
+	int key = -1; // 키값 초기화 
+	int index = -1; // 인덱스 초기화  
 
-	srand(time(NULL));
+	srand(time(NULL)); // seed값을 실행중에 변하게하는 srand 함수 
 
 	do{
 		printf("----------------------------------------------------------------\n");
@@ -49,55 +60,55 @@ int main()
 		printf("----------------------------------------------------------------\n");
 
 		printf("Command = ");
-		scanf(" %c", &command);
+		scanf(" %c", &command); //사용자에게 커맨드를 입력받는다 
 
 		switch(command) {
 		case 'z': case 'Z':
-			initialize(&array);
+			initialize(&array); //배열 초기화  
 			break;
 		case 'q': case 'Q':
-			freeArray(array);
+			freeArray(array); //배열 동적할당 해제 
 			break;
 		case 's': case 'S':
-			selectionSort(array);
+			selectionSort(array); //배열을 선택정렬하는 함수 호출 
 			break;
 		case 'i': case 'I':
-			insertionSort(array);
+			insertionSort(array); //배열을 삽입정렬하는 함수 호출 
 			break;
 		case 'b': case 'B':
-			bubbleSort(array);
+			bubbleSort(array); //배열을 버블정렬 하는 함수 호출 
 			break;
 		case 'l': case 'L':
-			shellSort(array);
+			shellSort(array); //배열을 쉘정렬 해주는 함수 호출 
 			break;
 		case 'k': case 'K':
 			printf("Quick Sort: \n");
 			printf("----------------------------------------------------------------\n");
-			printArray(array);
-			quickSort(array, MAX_ARRAY_SIZE);
+			printArray(array); // 정렬 하기전 배열 출력 
+			quickSort(array, MAX_ARRAY_SIZE); // 퀵 정렬 함수 호출 
 			printf("----------------------------------------------------------------\n");
-			printArray(array);
+			printArray(array); //정렬후의 배열 출력 
 
 			break;
 
 		case 'h': case 'H':
 			printf("Hashing: \n");
 			printf("----------------------------------------------------------------\n");
-			printArray(array);
-			hashing(array, &hashtable);
-			printArray(hashtable);
+			printArray(array); //배열을 출력하는 함수 
+			hashing(array, &hashtable); // 배열 활용하여 해싱 
+			printArray(hashtable); // 해싱하여 얻은 해쉬 테이블 출력 
 			break;
 
 		case 'e': case 'E':
 			printf("Your Key = ");
-			scanf("%d", &key);
-			printArray(hashtable);
-			index = search(hashtable, key);
+			scanf("%d", &key); // 사용자에게 키값 입력받음 
+			printArray(hashtable); // 현재 해쉬테이블 출력 
+			index = search(hashtable, key); // 해쉬테이블에 입력받은 키값과 일치하는 키가 있다면 인덱스 저장 
 			printf("key = %d, index = %d,  hashtable[%d] = %d\n", key, index, index, hashtable[index]);
 			break;
 
 		case 'p': case 'P':
-			printArray(array);
+			printArray(array); //배열 관한 정보 출력 
 			break;
 		default:
 			printf("\n       >>>>>   Concentration!!   <<<<<     \n");
@@ -113,23 +124,24 @@ int initialize(int** a)
 {
 	int *temp = NULL;
 
-	if(*a == NULL) {
-		temp = (int*)malloc(sizeof(int) * MAX_ARRAY_SIZE);
-		*a = temp; 
-	} else
-		temp = *a;
+	/* array가 NULL인 경우 메모리 할당 */
+	if(*a == NULL) { //배열이 존재하지 않는다면 
+		temp = (int*)malloc(sizeof(int) * MAX_ARRAY_SIZE); //temp에 배열 사이즈 만큼 동적 할당 
+		*a = temp;   /* 할당된 메모리의 주소를 복사 --> main에서 배열을 control 할수 있도록 함*/
+	} else //배열이 존재 할 경우 
+		temp = *a; //템프가 배열에 접근되도록 
 
-
-	for(int i = 0; i < MAX_ARRAY_SIZE; i++)
-		temp[i] = rand() % MAX_ARRAY_SIZE;
+	/* 랜덤값을 배열의 값으로 저장 */
+	for(int i = 0; i < MAX_ARRAY_SIZE; i++) //모든 배열의 인덱스에 접근 
+		temp[i] = rand() % MAX_ARRAY_SIZE; // 모든 인덱스 값들을 0~12의 값을 랜덤으로 초기화 
 
 	return 0;
 }
 
 int freeArray(int *a)
 {
-	if(a != NULL)
-		free(a);
+	if(a != NULL) //배열이 존재하면 
+		free(a); //동적할당 해제 
 	return 0;
 }
 
