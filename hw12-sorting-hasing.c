@@ -122,6 +122,7 @@ int main()
 
 int initialize(int** a)
 {
+	int i;
 	int *temp = NULL;
 
 	/* array가 NULL인 경우 메모리 할당 */
@@ -132,7 +133,7 @@ int initialize(int** a)
 		temp = *a; //템프가 배열에 접근되도록 
 
 	/* 랜덤값을 배열의 값으로 저장 */
-	for(int i = 0; i < MAX_ARRAY_SIZE; i++) //모든 배열의 인덱스에 접근 
+	for(i = 0; i < MAX_ARRAY_SIZE; i++) //모든 배열의 인덱스에 접근 
 		temp[i] = rand() % MAX_ARRAY_SIZE; // 모든 인덱스 값들을 0~12의 값을 랜덤으로 초기화 
 
 	return 0;
@@ -147,14 +148,15 @@ int freeArray(int *a)
 
 void printArray(int *a)
 {
+	int i;
 	if (a == NULL) { //배열이 존재하지 않는 경우 
 		printf("nothing to print.\n");  //오류메세지  
 		return;
 	}
-	for(int i = 0; i < MAX_ARRAY_SIZE; i++) //배열에 모든 인덱스 접근 
+	for(i = 0; i < MAX_ARRAY_SIZE; i++) //배열에 모든 인덱스 접근 
 		printf("a[%02d] ", i); //0~12까지 출력 
 	printf("\n");
-	for(int i = 0; i < MAX_ARRAY_SIZE; i++)
+	for(i = 0; i < MAX_ARRAY_SIZE; i++)
 		printf("%5d ", a[i]); //배열의 원소값 출력 
 	printf("\n");
 }
@@ -230,7 +232,7 @@ int bubbleSort(int *a)
 
 	for(i = 0; i < MAX_ARRAY_SIZE; i++) // 0~12 인덱스 반복문 돌기 
 	{
-		for (j = 0; j < MAX_ARRAY_SIZE; j++) // j가 인덱스 1부터 12까지 반복문 돌기 
+		for (j = 1; j < MAX_ARRAY_SIZE; j++) // j가 인덱스 1부터 12까지 반복문 돌기 
 		{
 			if (a[j-1] > a[j]) //j와 직전인덱스를 비교해서 큰값이 나올 경우 
 			{
@@ -313,46 +315,55 @@ int quickSort(int *a, int n)
 }
 
 int hashCode(int key) {
-   return key % MAX_HASH_TABLE_SIZE;
+   return key % MAX_HASH_TABLE_SIZE; //키의 해쉬 테이블의 크기로 나눈 나머지를 리턴 
 }
 
 int hashing(int *a, int **ht)
 {
+	int i;
 	int *hashtable = NULL;
 
+	/* hash table이 NULL인 경우 메모리 할당 */
 	if(*ht == NULL) {
 		hashtable = (int*)malloc(sizeof(int) * MAX_ARRAY_SIZE);
-		*ht = hashtable;  
+		*ht = hashtable;   /* 할당된 메모리의 주소를 복사 --> main에서 배열을 control 할수 있도록 함*/
 	} else {
-		hashtable = *ht;	
+		hashtable = *ht;	/* hash table이 NULL이 아닌경우, table 재활용, reset to -1 */
 	}
 
+	for(i = 0; i < MAX_HASH_TABLE_SIZE; i++) //해시 테이블의 모든 해시테이블사이즈에 버킷에 값을 저장 
+		hashtable[i] = -1; //i번째 버킷에 -1 저장 
+
+	/* 
 	for(int i = 0; i < MAX_HASH_TABLE_SIZE; i++)
-		hashtable[i] = -1;
+		printf("hashtable[%d] = %d\n", i, hashtable[i]);
+	*/
 
-	
-
-	int key = -1;
-	int hashcode = -1;
-	int index = -1;
-	for (int i = 0; i < MAX_ARRAY_SIZE; i++)
+	int key = -1; // 해시테이블에 들어갈 키를 저장할 변수 
+	int hashcode = -1; // 키값의 처음으로 구한 홈 주소를 저장할 변수 
+	int index = -1; //키의 새로운 홈 주소를 저장하는 변수 
+	for (i = 0; i < MAX_ARRAY_SIZE; i++)
 	{
-		key = a[i];
-		hashcode = hashCode(key);
-		
-		if (hashtable[hashcode] == -1)
+		key = a[i]; // 현재 배열에서 i번째 원소를 키에 저장 
+		hashcode = hashCode(key); // 제산 함수를 이용하여 키의 홈 주소를 반환하여 킹의 홈주소를 hashcode에 저장 
+		/*
+		printf("key = %d, hashcode = %d, hashtable[%d]=%d\n", key, hashcode, hashcode, hashtable[hashcode]);
+		*/
+		if (hashtable[hashcode] == -1) //만약 해당 주소의 버킷에 -1이 들어있으면 해시테이블이 생성된 후 처음으로 키 삽입 
 		{
-			hashtable[hashcode] = key;
+			hashtable[hashcode] = key; //해당 버킷 키값 저장 
 		} else 	{
 
-			index = hashcode;
+			index = hashcode; // 제산 함수로 구했던 홈 주소를 인덱스에 저장 
 
 			while(hashtable[index] != -1)
 			{
-				index = (++index) % MAX_HASH_TABLE_SIZE;
-				
+				index = (++index) % MAX_HASH_TABLE_SIZE; //다음 버킷의  
+				/*
+				printf("index = %d\n", index);
+				*/
 			}
-			hashtable[index] = key;
+			hashtable[index] = key; //새로 구한 인덱스에 다른 키값이 들어있지 않은 경우 키값 저장 
 		}
 	}
 
@@ -361,16 +372,16 @@ int hashing(int *a, int **ht)
 
 int search(int *ht, int key)
 {
-	int index = hashCode(key);
+	int index = hashCode(key); // 제산 함수를 이용하여 키의 홈주소를 반환하는 함수를 호출 한뒤 반환값을 인덱스에 저장 
 
-	if(ht[index] == key)
-		return index;
-
-	while(ht[++index] != key)
+	if(ht[index] == key) // 만약 해쉬테이블의 index 번째 버킷에 들어있는 값과 키가 동일하다면 
+		return index; //index를 반환 
+ 
+	while(ht[++index] != key) // 다음 버킷에 들어있는 값과 key가 동일하지 않은경우 
 	{
-		index = index % MAX_HASH_TABLE_SIZE;
+		index = index % MAX_HASH_TABLE_SIZE; // 다시 배열의 크기로 나눠서 새로운 홈주소를 구하여 인덱스에 저장 
 	}
-	return index;
+	return index; // 새로운 홈주소의 버킷에 key와 동일한 값이 들어있다면 index를 반환 
 }
 
 
